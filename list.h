@@ -31,30 +31,30 @@ private:
 
 private:
     using allocator_t = std::allocator<Node>;
-    using traits = std::allocator_traits<allocator_t>;
+    using traits      = std::allocator_traits<allocator_t>;
 
 public:
     // Member type aliases
 
     using value_type = Type;
 
-    using reference = Type &;
+    using reference       = Type &;
     using const_reference = const Type &;
 
-    using pointer = Type *;
+    using pointer       = Type *;
     using const_pointer = const Type *;
 
-    using size_type = std::size_t;
+    using size_type       = std::size_t;
     using difference_type = std::ptrdiff_t;
 
-    using iterator = Iterator;
+    using iterator       = Iterator;
     using const_iterator = std::const_iterator<iterator>;
 
-    using reverse_iterator = std::reverse_iterator<iterator>;
+    using reverse_iterator       = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
     using iterator_category = std::bidirectional_iterator_tag;
-    using iterator_concept = std::bidirectional_iterator_tag;
+    using iterator_concept  = std::bidirectional_iterator_tag;
 
 public:
     // Constructors and Destructor
@@ -718,13 +718,10 @@ private:
             first = std::ranges::next(first);
         }
 
-        if (first != last)
-        {
-
+        if (first != last) {
             this->insert_before(begin, first, last);
         }
-        else
-        {
+        else {
             this->erase(begin, end);
         }
     }
@@ -738,8 +735,7 @@ private:
     {
         if constexpr (not typename traits::is_always_equal{})
         {
-            if (this->m_alloc != outer.m_alloc)
-            {
+            if (this->m_alloc != outer.m_alloc) {
                 this->clear();
             }
             this->m_alloc = outer.m_alloc;
@@ -769,7 +765,7 @@ private:
         this->clear();
 
         this->m_alloc = std::move(outer.m_alloc);
-        this->m_head = std::exchange(outer.m_head, this->__M_create_node());
+        this->m_head  = std::exchange(outer.m_head, this->__M_create_node());
     }
 
     /**
@@ -779,12 +775,11 @@ private:
     */
     constexpr void __M_move_assign(list &outer, std::false_type)
     {
-        if (this->m_alloc == outer.m_alloc)
-        {
+        if (this->m_alloc == outer.m_alloc) {
+
             this->__M_move_assign(outer, std::true_type{});
         }
-        else
-        {
+        else {
             this->m_head = std::exchange(outer.m_head, this->__M_create_node());
         }
     }
@@ -917,14 +912,18 @@ public:
     friend struct list;
 
 public:
-    using value_type = Type;                                   ///< The type of data stored in the linked list.
-    using reference = Type &;                                  ///< Reference to the data type.
-    using const_reference = const Type &;                      ///< Const reference to the data type.
-    using pointer = Type *;                                    ///< Pointer to the data type.
-    using const_pointer = const Type *;                        ///< Const pointer to the data type.
-    using difference_type = std::ptrdiff_t;                    ///< Type representing the difference between two iterators.
-    using iterator_category = std::bidirectional_iterator_tag; ///< Iterator category.
-    using iterator_concept = std::bidirectional_iterator_tag;  ///< Iterator concept.
+    using value_type = Type;
+
+    using reference       = Type &;                                  
+    using const_reference = const Type &;
+
+    using pointer       = Type *;                                 
+    using const_pointer = const Type *; 
+
+    using difference_type = std::ptrdiff_t;
+
+    using iterator_category = std::bidirectional_iterator_tag; 
+    using iterator_concept  = std::bidirectional_iterator_tag;  
 
 public:
     // Constructors
@@ -958,20 +957,14 @@ public:
     * @brief Dereference operator.
     * @return Reference to the data.
     */
-    constexpr auto operator*() noexcept -> reference
-    {
-        return this->m_cursor->m_data;
-    }
+    constexpr auto operator*() noexcept -> reference { return this->m_cursor->m_data; }
 
     /**
     * Returns a const reference to the data stored in the current node.
     * @brief Dereference operator (const version).
     * @return Const reference to the data.
     */
-    constexpr auto operator*() const noexcept -> reference
-    {
-        return this->m_cursor->m_data;
-    }
+    constexpr auto operator*() const noexcept -> reference { return this->m_cursor->m_data; }
 
 public:
     // Member access operators
@@ -980,20 +973,14 @@ public:
     * @brief Member access operator.
     * @return Pointer to the data.
     */
-    constexpr auto operator->() noexcept
-    {
-        return std::addressof(this->m_cursor->m_data);
-    }
+    constexpr auto operator->() noexcept { return std::addressof(this->m_cursor->m_data); }
 
     /**
     * Returns a const pointer to the data stored in the current node.
     * @brief Member access operator (const version).
     * @return Const pointer to the data.
     */
-    constexpr auto operator->() const noexcept
-    {
-        return std::addressof(this->m_cursor->m_data);
-    }
+    constexpr auto operator->() const noexcept { return std::addressof(this->m_cursor->m_data); }
 
 public:
     // Increment and decrement operators

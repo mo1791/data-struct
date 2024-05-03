@@ -27,26 +27,26 @@ private:
 
 private:
     using allocator_t = std::allocator<Node>;
-    using traits = std::allocator_traits<allocator_t>;
+    using traits      = std::allocator_traits<allocator_t>;
 
 public:
     // Type Aliases
     using value_type = Type;
 
-    using reference = Type &;
+    using reference       = Type &;
     using const_reference = const Type &;
 
-    using pointer = Type *;
+    using pointer       = Type *;
     using const_pointer = const Type *;
 
+    using size_type       = std::size_t;
     using difference_type = std::ptrdiff_t;
-    using size_type = std::size_t;
 
-    using iterator = Iterator;
+    using iterator       = Iterator;
     using const_iterator = std::const_iterator<Iterator>;
 
     using iterator_category = std::forward_iterator_tag;
-    using iterator_concept = std::forward_iterator_tag;
+    using iterator_concept  = std::forward_iterator_tag;
 
 public:
     // Constructors
@@ -731,6 +731,20 @@ private:
 template <class Type>
 struct forward_list<Type>::Iterator final
 {
+public:
+    using value_type = Type;
+
+    using reference       = Type&;
+    using const_reference = const Type&;
+
+    using pointer       = Type*;
+    using const_pointer = const Type*
+
+    using difference_type = std::ptrdiff_t;
+
+    using iterator_category = std::forward_iterator_tag;
+    using iterator_concept  = std::forward_iterator_tag;
+    
 public:
     // Public Member Functions
 

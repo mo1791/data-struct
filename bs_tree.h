@@ -34,17 +34,20 @@ private:
 private:
     // Type aliases for allocator and allocator traits
     using allocator_t = std::allocator<Node>;
-    using traits = std::allocator_traits<allocator_t>;
+    using traits      = std::allocator_traits<allocator_t>;
 
 public:
     // Public typedefs for types used in the tree
     using value_type = Type;
-    using reference = Type &;
+
+    using reference       = Type &;
     using const_reference = const Type &;
-    using pointer = Type *;
+
+    using pointer       = Type *;
     using const_pointer = const Type *;
+
+    using size_type       = std::size_t;
     using difference_type = std::ptrdiff_t;
-    using size_type = std::size_t;
 
 public:
     /**
@@ -860,14 +863,6 @@ struct binary_search_tree<Type>::Node final
 
 public:
     friend struct binary_search_tree;
-
-public:
-    // Public member typedefs
-    using value_type = Type;
-    using reference = Type &;
-    using const_reference = const Type &;
-    using pointer = Type *;
-    using const_pointer = const Type *;
 
 public:
     // Constructors

@@ -6,7 +6,6 @@
 #include <ranges>
 #include <utility>
 
-
 /**
 * @brief A generic queue implemented as a doubly linked list.
 * @tparam Type The type of elements stored in the queue.
@@ -114,6 +113,7 @@ public:
         : queue{}
     {
         this->__M_range_init(first, last);
+        this->m_size = std::ranges::distance(first, last);
     }
 
     // Assignment operators
@@ -188,6 +188,38 @@ public:
 
         this->m_head->push_back(this->__M_create_node(std::in_place, std::forward<ARGS>(args)...));
         this->m_size = this->m_size + 1UL;
+    }
+
+
+public:
+    // Modifiers
+
+    /**
+    * @brief Removes the first element from the queue. 
+    * @note Calling this method on an empty queue results in undefined behavior.
+    */
+    constexpr void pop_front()
+    {
+        assert(not this->empty());
+
+        auto target = this->m_head->m_next;
+
+        this->m_head->m_next = target->m_next;
+        target->m_next->m_prev = this->m_head;
+
+        traits::destroy(this->m_alloc, target);
+        traits::deallocate(this->m_alloc, target, 1UL);
+
+        this->m_size = this->m_size - 1UL;
+    }
+
+    /**
+    * @brief Removes all elements from the queue.
+    */
+    constexpr void clear()
+    {
+        while (not this->empty())
+            this->pop_front();
     }
 
 public:
@@ -592,3 +624,4 @@ private:
     Node *m_next{this}; // Pointer to the next node
 };
 
+#endif

@@ -21,7 +21,7 @@ private:
 private:
     // Type aliases for allocator and allocator traits
     using allocator_type = std::allocator<Node>;
-    using traits = std::allocator_traits<allocator_type>;
+    using traits         = std::allocator_traits<allocator_type>;
 
 public:
     // Type aliases for readability and standard conformance
