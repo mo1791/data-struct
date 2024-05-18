@@ -204,8 +204,8 @@ public:
 
         auto target = this->m_head->m_next;
 
-        this->m_head->m_next = target->m_next;
-        target->m_next->m_prev = this->m_head;
+        target->m_prev->m_next = target->m_next;
+        target->m_next->m_prev = target->m_prev;
 
         traits::destroy(this->m_alloc, target);
         traits::deallocate(this->m_alloc, target, 1UL);
