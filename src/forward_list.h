@@ -90,7 +90,7 @@ public:
     * @tparam range_t Type of the range.
     * @param range The range to initialize the forward_list.
     */
-    template <std::ranges::range range_t>
+    template <typename range_t> requires std::ranges::range<range_t>
     constexpr forward_list(std::from_range_t, range_t &&range)
         requires(std::conjunction_v<
                  std::bool_constant<details::non_self<range_t, forward_list>>,
@@ -106,7 +106,11 @@ public:
     * @param first The beginning of the range.
     * @param last The end of the range.
     */
-    template <std::input_iterator Iterator, std::sentinel_for<Iterator> Sentinel>
+    template <typename Iterator, typename Sentinel>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<Iterator>>,
+            std::bool_constant<std::sentinel_for<Sentinel, Iterator>>
+        >::value
     constexpr forward_list(Iterator first, Sentinel last)
         requires(std::constructible_from<Type, std::iter_value_t<Iterator>>)
         : forward_list{}
@@ -190,9 +194,12 @@ public:
     * @param position Iterator pointing to the position after which the element should be emplaced.
     * @param args Arguments for constructing the element.
     */
-    template <std::input_iterator _iterator, class... ARGS>
+    template <typename _iterator, class... ARGS>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<_iterator>>,
+            std::bool_constant<std::constructible_from<Type, ARGS...>>
+        >::value
     constexpr void emplace_after(_iterator position, ARGS &&...args)
-        requires(std::constructible_from<Type, ARGS...>)
     {
         if (auto current = position.m_node)
         {
@@ -208,9 +215,12 @@ public:
     * @param position Iterator pointing to the position after which the element should be inserted.
     * @param data The element to be inserted.
     */
-    template <std::input_iterator _iterator, class UType>
+    template <typename  _iterator, class UType>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<_iterator>>,
+            std::bool_constant<std::constructible_from<Type, UType>>
+        >::value
     constexpr void insert_after(_iterator position, UType &&data)
-        requires(std::constructible_from<Type, UType>)
     {
         if (auto current = position.m_node)
         {
@@ -227,8 +237,11 @@ public:
     * @param data The element to be inserted.
     */
     template <std::input_iterator _iterator, class UType>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<_iterator>>,
+            std::bool_constant<std::constructible_from<Type, UType>>
+        >::value
     constexpr void insert_after(_iterator position, size_type count, UType &&data)
-        requires(std::constructible_from<Type, UType>)
     {
         while (count--)
         {
@@ -245,10 +258,14 @@ public:
     * @param first Iterator pointing to the beginning of the range.
     * @param last Sentinel pointing to the end of the range.
     */
-    template <std::input_iterator _iterator, std::input_iterator Iterator,
-                                             std::sentinel_for<Iterator> Sentinel>
+    template <typename _iterator, typename Iterator, typename Sentinel>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<_iterator>>,
+            std::bool_constant<std::input_iterator<Iterator>>,
+            std::bool_constant<std::sentinel_for<Sentinel, Iterator>>,
+            std::constructible_from<Type, std::iter_value_t<Iterator>>
+        >::value
     constexpr void insert_after(_iterator position, Iterator first, Sentinel last)
-        requires(std::constructible_from<Type, std::iter_value_t<Iterator>>)
     {
         while (first != last)
             this->insert_after(position++, *first++);
@@ -285,7 +302,7 @@ public:
     * @tparam _iterator Type of the iterator.
     * @param prev Iterator pointing to the position before the element to be erased.
     */
-    template <std::input_iterator _iterator>
+    template <typename _iterator> requires std::input_iterator<_iterator>
     constexpr void erase_after(_iterator prev)
     {
         if (auto current = prev.m_node)
@@ -309,7 +326,11 @@ public:
     * @param prev Iterator pointing to the position before the first element to be erased.
     * @param end Sentinel indicating the end of the range to be erased.
     */
-    template <std::input_iterator _iterator, std::sentinel_for<_iterator> _sentinel>
+    template <typename _iterator, typename _sentinel>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<_iterator>>,
+            std::bool_constant<std::sentinel_for<_sentinel, _iterator>>
+        >::value
     constexpr void erase_after(_iterator prev, _sentinel end)
     {
     }
@@ -491,7 +512,11 @@ private:
     * @param first Iterator pointing to the beginning of the range.
     * @param last Sentinel indicating the end of the range.
     */
-    template <std::input_iterator _iterator, std::sentinel_for<_iterator> _sentinel>
+    template <typename _iterator, typename _sentinel>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<_iterator>>,
+            std::bool_constant<std::sentinel_for<_sentinel, _iterator>>
+        >::value
     constexpr void __M_range_init(_iterator first, _sentinel last)
     {
         if (first == last)
@@ -551,7 +576,11 @@ private:
     * @param first Iterator pointing to the beginning of the range.
     * @param last Sentinel indicating the end of the range.
     */
-    template <std::input_iterator _iterator, std::sentinel_for<_iterator> _sentinel>
+    template <typename _iterator, typename _sentinel>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<_iterator>>,
+            std::bool_constant<std::sentinel_for<_sentinel, _iterator>>
+        >::value
     constexpr void __M_assign(_iterator first, _sentinel last)
     {
         if (first == last)
