@@ -73,9 +73,13 @@ public:
     * @param begin The beginning iterator of the range.
     * @param end The ending sentinel of the range.
     */
-    template <std::input_iterator Iterator, std::sentinel_for<Iterator> Sentinel>
+    template <typename Iterator, typename Sentinel>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<Iterator>>,
+            std::bool_constant<std::sentinel_for<Sentinel, Iterator>>,
+            std::bool_constant<std::constructible_from<Type, std::iter_value_t<Iterator>>
+        >::value
     constexpr stack(Iterator begin, Sentinel end)
-        requires(std::constructible_from<Type, std::iter_value_t<Iterator>>)
         : stack{}
     {
         while (begin != end)
@@ -100,9 +104,12 @@ public:
     * @param from_range_t A tag type to identify the range constructor.
     * @param range The range of elements.
     */
-    template <std::ranges::range range_t>
+    template <typename range_t>
+        requires std::conjunction<
+            std::bool_constant<std::ranges::range<range_t>>,
+            std::bool_constant<std::constructible_from<Type, std::ranges::range_value_t<range_t>>
+        >::value
     constexpr stack(std::from_range_t, range_t &&range)
-        requires(std::constructible_from<Type, std::ranges::range_value_t<Type>>)
         : stack{std::ranges::begin(range), std::ranges::end(range)}
     {
     }

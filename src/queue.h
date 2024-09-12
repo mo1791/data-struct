@@ -92,9 +92,12 @@ public:
     * @param from_range_t Tag type for disambiguation.
     * @param range The range to construct the queue from.
     */
-    template <std::ranges::range range_t>
+    template <typename range_t>
+        requires std::conjunction<
+            std::bool_constant<std::ranges::range<range_t>>,
+            std::bool_constant<std::constructible_from<Type, std::ranges::range_value_t<range_t>>
+        >::value
     constexpr queue(std::from_range_t, range_t &&range)
-        requires std::constructible_from<Type, std::ranges::range_value_t<range_t>>
         : queue{std::ranges::begin(range), std::ranges::end(range)}
     {
     }
@@ -107,9 +110,13 @@ public:
     * @param first The beginning of the range.
     * @param last The end of the range.
     */
-    template <std::input_iterator Iterator, std::sentinel_for<Iterator> Sentinel>
+    template <typename Iterator, typename Sentinel>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<Iterator>>,
+            std::bool_constant<std::sentinel_for<Sentinel, Iterator>>,
+            std::bool_constant<std::constructible_from<Type, std::iter_value_t<Iterator>>
+        >::value
     constexpr queue(Iterator first, Sentinel last)
-        requires std::constructible_from<Type, std::iter_value_t<Iterator>>
         : queue{}
     {
         this->__M_range_init(first, last);
@@ -382,7 +389,11 @@ private:
     * @param first The beginning of the range.
     * @param last The end of the range.
     */
-    template <std::input_iterator _iterator, std::sentinel_for<_iterator> _sentinel>
+    template <typename _iterator, typename _sentinel>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<_iterator>>,
+            std::bool_constant<std::sentinel_for<_sentinel, _iterator>>
+        >::value
     constexpr void __M_range_init(_iterator first, _sentinel last)
     {
         for (; first != last; first = std::ranges::next(first))
