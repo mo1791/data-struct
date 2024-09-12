@@ -24,7 +24,7 @@ namespace details
 
 
 // Templated binary search tree class
-template <std::totally_ordered Type>
+template <typename Type> requires std::totally_ordered<Type>
 struct binary_search_tree final
 {
 private:
@@ -86,7 +86,11 @@ public:
     * @param first The beginning iterator.
     * @param last The ending sentinel.
     */
-    template <std::input_iterator Iterator, std::sentinel_for<Iterator> Sentinel>
+    template <typename Iterator, typename Sentinel>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<Iterator>>,
+            std::bool_constant<std::sentinel_for<Sentinel, Iterator>>
+        >::value
     constexpr binary_search_tree(Iterator first, Sentinel last)
         requires(std::constructible_from<Type, std::iter_value_t<Iterator>>)
         : binary_search_tree{}
@@ -99,7 +103,7 @@ public:
     * @tparam range_t The range type.
     * @param range The range to construct the tree from.
     */
-    template <std::ranges::range range_t>
+    template <typename range_t> requires std::ranges:ranges<range_t>
     constexpr binary_search_tree(std::from_range_t, range_t &&range)
         requires(std::conjunction<
                  std::bool_constant<details::non_self<range_t, binary_search_tree>>,
@@ -752,7 +756,11 @@ private:
     * @param first Iterator pointing to the beginning of the range.
     * @param last Sentinel indicating the end of the range.
     */
-    template <std::input_iterator _iterator, std::sentinel_for<_iterator> _sentinel>
+    template <typename _iterator, typename _sentinel>
+        requires std::conjunction<
+            std::bool_constant<std::input_iterator<_iterator>>,
+            std::bool_constant<std::sentinel_for<_sentinel, _iterator>>
+        >::value
     constexpr void __M_range_init(_iterator first, _sentinel last)
     {
         for (; first != last; first = std::ranges::next(first))
@@ -857,7 +865,7 @@ binary_search_tree(Iterator, Sentinel) -> binary_search_tree<std::iter_value_t<I
 
 
 // Node struct representing a node in the binary search tree
-template <std::totally_ordered Type>
+template <typename Type> requires std::totally_ordered<Type>
 struct binary_search_tree<Type>::Node final
 {
 
