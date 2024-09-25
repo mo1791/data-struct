@@ -214,8 +214,8 @@ public:
         target->m_prev->m_next = target->m_next;
         target->m_next->m_prev = target->m_prev;
 
-        traits::destroy(this->m_alloc, target);
-        traits::deallocate(this->m_alloc, target, 1UL);
+        traits::destroy(this->m_alloc, std::to_address(target));
+        traits::deallocate(this->m_alloc, std::to_address(target), 1UL);
 
         this->m_size = this->m_size - 1UL;
     }
@@ -328,8 +328,8 @@ public:
     constexpr ~queue()
     {
         this->clear();
-        traits::destroy(this->m_alloc, this->m_head);
-        traits::deallocate(this->m_alloc, this->m_head, 1UL);
+        traits::destroy(this->m_alloc, std::to_address(this->m_head));
+        traits::deallocate(this->m_alloc, std::to_address(this->m_head), 1UL);
         this->m_head = nullptr;
     }
 
@@ -345,13 +345,13 @@ private:
     template <class... ARGS>
     constexpr Node *__M_create_node(ARGS &&...args)
     {
-        Node *node = traits::allocate(this->m_alloc, 1UL);
+        auto node = traits::allocate(this->m_alloc, 1UL);
 
         try {
-            traits::construct(this->m_alloc, node, std::forward<ARGS>(args)...);
+            traits::construct(this->m_alloc, std::to_address(node), std::forward<ARGS>(args)...);
         }
         catch (...) {
-            traits::deallocate(this->m_alloc, node, 1UL);
+            traits::deallocate(this->m_alloc, std::to_address(node), 1UL);
             throw;
         }
         return node;
@@ -419,8 +419,8 @@ private:
         {
             if (this->m_head != nullptr)
             {
-                traits::destroy(this->m_alloc, this->m_head);
-                traits::deallocate(this->m_alloc, this->m_head, 1UL);
+                traits::destroy(this->m_alloc, std::to_address(this->m_head));
+                traits::deallocate(this->m_alloc, std::to_address(this->m_head), 1UL);
                 this->m_head = nullptr;
             }
 
@@ -464,8 +464,8 @@ private:
 
                 cursor = cursor->m_next;
 
-                traits::destroy(this->m_alloc, target);
-                traits::deallocate(this->m_alloc, target, 1UL);
+                traits::destroy(this->m_alloc, std::to_address(target));
+                traits::deallocate(this->m_alloc, std::to_address(target), 1UL);
             }
         }
     }

@@ -193,8 +193,8 @@ public:
         {
             this->m_head = this->m_head->m_next;
 
-            traits::destroy(this->m_alloc, target);
-            traits::deallocate(this->m_alloc, target, 1UL);
+            traits::destroy(this->m_alloc, std::to_address(target));
+            traits::deallocate(this->m_alloc, std::to_address(target), 1UL);
 
             this->m_size = this->m_size - 1UL;
         }
@@ -286,13 +286,13 @@ private:
     template <class... ARGS>
     constexpr Node *__M_create_node(ARGS &&...args)
     {
-        Node *node = traits::allocate(this->m_alloc, 1UL);
+        auto node = traits::allocate(this->m_alloc, 1UL);
 
         try {
-            traits::construct(this->m_alloc, node, std::forward<ARGS>(args)...);
+            traits::construct(this->m_alloc, std::to_address(node), std::forward<ARGS>(args)...);
         }
         catch (...) {
-            traits::deallocate(this->m_alloc, node, 1UL);
+            traits::deallocate(this->m_alloc, std::to_address(node), 1UL);
             throw;
         }
         return node;
@@ -369,8 +369,8 @@ private:
             {
                 temp = cursor;
                 cursor = cursor->m_next;
-                traits::destroy(this->m_alloc, temp);
-                traits::deallocate(this->m_alloc, temp, 1UL);
+                traits::destroy(this->m_alloc, std::to_address(temp));
+                traits::deallocate(this->m_alloc, std::to_address(temp), 1UL);
             }
             return;
         }
